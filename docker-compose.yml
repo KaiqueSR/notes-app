@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_APP=app
+      - FLASK_DEBUG=true
+      - FLASK_RUN_HOST=0.0.0.0
+
+  db:
+    image: postgres:alpine
+    ports:
+      - "5432:5432"
+    env_file:
+      - postgres.env
+    volumes:
+      - data:/var/lib/postgresql/data
+
+volumes:
+  data:
