@@ -5,10 +5,8 @@ services:
     build: .
     ports:
       - "5000:5000"
-    environment:
-      - FLASK_APP=app
-      - FLASK_DEBUG=true
-      - FLASK_RUN_HOST=0.0.0.0
+    env_file:
+      - app.env
 
   db:
     image: postgres:alpine
