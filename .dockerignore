@@ -1,4 +1,8 @@
 .git
+.gitignore
 .venv
 .env
 *.example
+**/__pycache__
+*.pyc
+*.sh
