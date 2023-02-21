@@ -3,6 +3,7 @@ flask-smorest
 python-dotenv
 sqlalchemy
 flask-sqlalchemy
+flask-jwt-extended
 psycopg2-binary
 flask-migrate
 passlib

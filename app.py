@@ -3,6 +3,7 @@ import os
 from flask import Flask
 from flask_smorest import Api
 from flask_migrate import Migrate
+from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
 
 from resources.user import blp as UserBlueprint
@@ -23,11 +24,14 @@ def create_app():
     app.config["OPENAPI_SWAGGER_UI_PATH"] = "/swagger-ui"
     app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+    app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET")
 
     db.init_app(app)
     migrate = Migrate(app, db)
 
     api = Api(app)
+
+    jwt = JWTManager(app)
 
     api.register_blueprint(UserBlueprint)
 
