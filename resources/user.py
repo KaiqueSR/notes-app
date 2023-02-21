@@ -47,7 +47,8 @@ class UserLogin(MethodView):
             access_token = create_access_token(identity=user.id, fresh=True)
             refresh_token = create_refresh_token(identity=user.id)
 
-            resp.set_cookie("refresh_token_cookie", refresh_token)
+            resp.set_cookie("refresh_token_cookie",
+                            refresh_token, httponly=True)
 
             resp.response = json.dumps({"access_token": access_token})
             return resp
