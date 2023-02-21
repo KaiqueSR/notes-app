@@ -8,7 +8,7 @@ from passlib.hash import pbkdf2_sha256
 from uuid import uuid4
 
 from db import db
-from schemas import UserRegisterSchema, UserLoginSchema
+from schemas import UserRegisterSchema, UserSchema
 from models import UserModel
 
 blp = Blueprint("Users", "users", description="Operations on users")
@@ -36,7 +36,7 @@ class UserRegister(MethodView):
 
 @blp.route("/login")
 class UserLogin(MethodView):
-    @blp.arguments(UserLoginSchema)
+    @blp.arguments(UserSchema)
     def post(self, user_data):
         resp = make_response()
         user = UserModel.query.filter(

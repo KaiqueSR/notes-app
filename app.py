@@ -7,6 +7,7 @@ from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
 
 from resources.user import blp as UserBlueprint
+from resources.note import blp as NoteBlueprint
 from db import db
 import models
 
@@ -34,5 +35,6 @@ def create_app():
     jwt = JWTManager(app)
 
     api.register_blueprint(UserBlueprint)
+    api.register_blueprint(NoteBlueprint)
 
     return app
