@@ -5,7 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from uuid import uuid4
 
 from db import db
-from models import NoteModel
+from models import NoteModel, UserModel
 from schemas import NoteSchema
 
 blp = Blueprint("Notes", "notes", description="Operations on notes")
@@ -13,6 +13,15 @@ blp = Blueprint("Notes", "notes", description="Operations on notes")
 
 @blp.route("/notes")
 class Notes(MethodView):
+    @jwt_required()
+    @blp.response(200, NoteSchema(many=True))
+    def get(self):
+        identity = get_jwt_identity()
+
+        user = UserModel.query.get_or_404(identity)
+
+        return user.notes
+
     @jwt_required()
     @blp.arguments(NoteSchema)
     @blp.response(201, NoteSchema)

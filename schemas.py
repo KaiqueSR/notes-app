@@ -16,4 +16,3 @@ class NoteSchema(Schema):
     title = fields.Str(required=True)
     content = fields.Str()
     user_id = fields.Str(load_only=True)
-    user = fields.Nested(UserRegisterSchema(), dump_only=True)
