@@ -7,3 +7,4 @@ flask-jwt-extended
 psycopg2-binary
 flask-migrate
 passlib
+redis
