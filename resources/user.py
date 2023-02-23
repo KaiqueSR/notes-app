@@ -82,7 +82,8 @@ class UserRefreshToken(MethodView):
 
         previous_token = redis.get(f"active_tokens:user:{current_user}:jti")
 
-        redis.sadd("blocklist:jti", previous_token)
+        if previous_token:
+            redis.sadd("blocklist:jti", previous_token)
 
         redis.set(f"active_tokens:user:{current_user}:jti", get_jti(new_token))
 
