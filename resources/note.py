@@ -68,3 +68,14 @@ class NoteViewOrUpdate(MethodView):
 
         return note
         
+    @jwt_required()
+    @blp.response(200, NoteSchema)
+    def get(self, note_id):
+        identity = get_jwt_identity()
+
+        note = NoteModel.query.get_or_404(note_id)
+        
+        if note.user_id != identity:
+            abort(403, message="This note is not yours")
+
+        return note
