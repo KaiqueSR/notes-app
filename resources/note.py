@@ -42,6 +42,18 @@ class UserNoteViewOrCreation(MethodView):
 @blp.route("/notes/<string:note_id>")
 class NoteViewOrUpdate(MethodView):
     @jwt_required()
+    @blp.response(200, NoteSchema)
+    def get(self, note_id):
+        identity = get_jwt_identity()
+
+        note = NoteModel.query.get_or_404(note_id)
+
+        if note.user_id != identity:
+            abort(403, message="This note is not yours")
+
+        return note
+
+    @jwt_required()
     @blp.arguments(NoteUpdateSchema)
     @blp.response(200, NoteSchema)
     def put(self, note_data, note_id):
@@ -54,7 +66,9 @@ class NoteViewOrUpdate(MethodView):
                 abort(403, message="This note is not yours")
 
             note.title = note_data["title"] if "title" in note_data else note.title
-            note.content = note_data["content"] if "content" in note_data else note.content
+            note.content = (
+                note_data["content"] if "content" in note_data else note.content
+            )
         else:
             note = NoteModel(id=note_id, user_id=identity, **note_data)
 
@@ -62,20 +76,28 @@ class NoteViewOrUpdate(MethodView):
             db.session.add(note)
             db.session.commit()
         except IntegrityError:
-            abort(400, message="When creating an object via PUT method, the title should not be null.")
+            abort(
+                400,
+                message="When creating an object via PUT method, the title should not be null.",
+            )
         except SQLAlchemyError:
             abort(500, message="An error occurred while trying to update the note")
 
         return note
-        
+
     @jwt_required()
-    @blp.response(200, NoteSchema)
-    def get(self, note_id):
+    def delete(self, note_id):
         identity = get_jwt_identity()
 
         note = NoteModel.query.get_or_404(note_id)
-        
+
         if note.user_id != identity:
             abort(403, message="This note is not yours")
 
-        return note
+        try:
+            db.session.delete(note)
+            db.session.commit()
+        except SQLAlchemyError:
+            abort(500, message="An error occurred while trying to delete the note")
+
+        return {"message": "The note was deleted"}
